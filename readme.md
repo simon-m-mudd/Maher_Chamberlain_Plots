@@ -1,4 +1,4 @@
-Plotting of figures from Mahaer and Chamberlain, Science, 2014
+Plotting of figures from Maher and Chamberlain, Science, 2014
 ==============================================================
 
 Author: [Simon M. Mudd](http://www.geos.ed.ac.uk/homes/smudd)
