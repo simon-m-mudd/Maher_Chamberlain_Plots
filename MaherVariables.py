@@ -66,6 +66,7 @@ def calculate_Q(Dw,q):
 # as a function of H, E and A
 def calculate_ConcRatio(H,E,A,L,q):
     Dw = calculate_Dw(H,E,A,L)
+    #print "Dw is: " + str(Dw)
     C = calculate_C(Dw,q)
     Cfrac = C/MaherParams.C_eq
     return Cfrac
