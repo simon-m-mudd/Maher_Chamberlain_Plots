@@ -62,10 +62,13 @@ def calculate_C(Dw,q):
 # get flux in tonnes per km^2 per year
 # Dw the Dahmkoeler coefficient in m/yr
 # q the runoff in m/yr     
-def calcualte_Q(Dw,q):
-    Q = 0.001*MaherParams.m*MaherParams.C_eq*(np.e*np.e*Dw/q)/(1+np.e*np.e*Dw/q)
+def calculate_Q(Dw,q):
+    molar_SiO2 = 2*15.9994+28.0855
+    Q = q*0.001*molar_SiO2*MaherParams.C_eq*(np.e*np.e*Dw/q)/(1+np.e*np.e*Dw/q)
     return Q
-  
+ 
+# This plots the farction of weatherable minerals remianing as a function
+# of the specific surface area, and over a range of H and E values 
 def MaherFwPlots(A):
   
   # These set the font size
@@ -152,7 +155,8 @@ def MaherFwPlots(A):
   #pp.show() 
 
 
-
+# This plots concentrations and is used to reproduce figure 2a from the
+# Maher and Chamberlain paper
 def MaherCPlots():
 
   # These set the font size
@@ -246,6 +250,9 @@ def MaherCPlots():
   figname = "Dw.svg"
   pp.savefig(figname, format='svg')      
 
+
+# This plots concentrations and is used to reproduce figure 2b from the
+# Maher and Chamberlain paper
 def MaherFluxPlots():
 
   # These set the font size
@@ -273,7 +280,7 @@ def MaherFluxPlots():
   nDw = Dw.shape[0]
   nq = q.shape[0]
   #print "nH is: " + str(nH) + " and nE is: " + str(nE)
-  C = np.zeros((nq,nDw))   
+  Q = np.zeros((nq,nDw))   
 
   i = 0
   for thisq in q:
@@ -281,12 +288,12 @@ def MaherFluxPlots():
       for thisDw in Dw:
           #print "H: " + str(thisH)+ " E: " + str(thisE)
           #print "i: "+str(i)+ " j: " +str(j)
-          C[i][j]=calculate_C(thisDw,thisq)
+          Q[i][j]=calculate_Q(thisDw,thisq)
           j = j+1
       i = i+1
 
-  print C
-  print C[:,0]
+  print Q
+  print Q[:,0]
   print Dw[0]
   
   # now plot the results    
@@ -294,27 +301,27 @@ def MaherFluxPlots():
   ax1 = fig.add_subplot(1,1,1)  
   
   print "Shapes: "
-  print C.shape[0]
+  print Q.shape[0]
   print q.shape[0]
-  print C[:,0].shape[0]
+  print Q[:,0].shape[0]
   
   print "q: "
-  print q
+  print Q
   print "C[:,0]: "
-  print C[:,0]
+  print Q[:,0]
   
-  pp.plot(q,C[:,0],linewidth=3,label = ("Dw = "+str(Dw[0])))
-  pp.plot(q,C[:,1],linewidth=3,label = ("Dw = "+str(Dw[1])))
-  pp.plot(q,C[:,2],linewidth=3,label = ("Dw = "+str(Dw[2])))
-  pp.plot(q,C[:,3],linewidth=3,label = ("Dw = "+str(Dw[3])))
-  pp.plot(q,C[:,4],linewidth=3,label = ("Dw = "+str(Dw[4]))) 
+  pp.plot(q,Q[:,0],linewidth=3,label = ("Dw = "+str(Dw[0])))
+  pp.plot(q,Q[:,1],linewidth=3,label = ("Dw = "+str(Dw[1])))
+  pp.plot(q,Q[:,2],linewidth=3,label = ("Dw = "+str(Dw[2])))
+  pp.plot(q,Q[:,3],linewidth=3,label = ("Dw = "+str(Dw[3])))
+  pp.plot(q,Q[:,4],linewidth=3,label = ("Dw = "+str(Dw[4]))) 
   #pp.plot(H,fw[:,3],linewidth=3,label = ("E = "+str(E[3]*1000)+ "$mm/yr$"))
   pp.legend()
 
   pp.rcParams['xtick.direction'] = 'in'
   pp.rcParams['ytick.direction'] = 'in'
   ax1.set_xscale('log')
-  #ax1.set_yscale('log')
+  ax1.set_yscale('log')
   
   
   ax1.spines['top'].set_linewidth(2.5)
@@ -331,18 +338,19 @@ def MaherFluxPlots():
     line.set_marker(mpllines.TICKRIGHT)
 
   pp.xlabel('Flow rate ($m/yr$)',fontsize = axis_size)
-  pp.ylabel('SiO2 (aq) (micromol/yr)',fontsize = axis_size) 
+  pp.ylabel('SiO2 (aq) flux ($tons/km^2/yr$)',fontsize = axis_size) 
   #pp.title("$A$ is "+str(A)+ " $m^2/g$")
   #pp.ylim(0,1)
 
 
-  figname = "Dw.svg"
+  figname = "Flux_MCfig2b.svg"
   pp.savefig(figname, format='svg')   
 
 
 def MaherPlots():
     #MaherFwPlots(0.1)
-    MaherCPlots()
+    #MaherCPlots()
+    MaherFluxPlots()
 
 if __name__ == "__main__":
     MaherPlots() 
